@@ -25,9 +25,6 @@ class RequestService {
 
     await chatRequest.save();
 
-    sender.pendingChatRequests.push(chatRequest._id);
-    await sender.save();
-
     return chatRequest;
   }
 

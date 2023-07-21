@@ -9,7 +9,6 @@ interface User extends Document {
   resetTokenExpiration?: Date;
   createdAt: Date;
   followedCommunities: Schema.Types.ObjectId[];
-  pendingChatRequests: Schema.Types.ObjectId[];
 }
 
 const userSchema = new Schema<User>({
@@ -21,7 +20,6 @@ const userSchema = new Schema<User>({
   resetTokenExpiration: { type: Date },
   createdAt: { type: Date, default: Date.now },
   followedCommunities: [{ type: Schema.Types.ObjectId, ref: "Community" }],
-  pendingChatRequests: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 const User = mongoose.model<User>("User", userSchema);
