@@ -42,6 +42,54 @@ class RequestService {
       .populate("recipient", "username");
     return pendingRequests;
   }
+
+  async acceptChatRequest(username: string, requestId: string): Promise<void> {
+    const chatRequest = await Request.findById(requestId);
+
+    if (!chatRequest) {
+      throw new Error("Chat request not found");
+    }
+
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+
+    if (chatRequest.recipient.toString() !== user._id.toString()) {
+      throw new Error("User is not the recipient");
+    }
+
+    if (chatRequest.status !== "pending") {
+      throw new Error("Chat request has already been processed");
+    }
+
+    chatRequest.status = "accepted";
+    await chatRequest.save();
+  }
+
+  async rejecttChatRequest(username: string, requestId: string): Promise<void> {
+    const chatRequest = await Request.findById(requestId);
+
+    if (!chatRequest) {
+      throw new Error("Chat request not found");
+    }
+
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+
+    if (chatRequest.recipient.toString() !== user._id.toString()) {
+      throw new Error("User is not the recipient");
+    }
+
+    if (chatRequest.status !== "pending") {
+      throw new Error("Chat request has already been processed");
+    }
+
+    chatRequest.status = "rejected";
+    await chatRequest.save();
+  }
 }
 
 export default new RequestService();

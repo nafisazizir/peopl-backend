@@ -7,6 +7,8 @@ module.exports = (app: Express) => {
 
   router.post("/", verifyToken, requests.createRequest);
   router.get("/", verifyToken, requests.getPendingRequests);
+  router.put("/:requestId/accept", verifyToken, requests.acceptChatRequest);
+  router.put("/:requestId/reject", verifyToken, requests.rejectChatRequest);
 
   app.use("/api/request", router);
 };
