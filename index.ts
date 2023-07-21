@@ -31,6 +31,7 @@ require("./src/routes/users")(app);
 require("./src/routes/communities")(app);
 require("./src/routes/posts")(app);
 require("./src/routes/comments")(app);
+require("./src/routes/matchmaking")(app);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
