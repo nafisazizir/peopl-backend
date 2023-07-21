@@ -27,6 +27,11 @@ app.get("/", (req, res) => {
   res.send("Welcome to Peopl Back End!");
 });
 
+require("./src/routes/users")(app);
+require("./src/routes/communities")(app);
+require("./src/routes/posts")(app);
+require("./src/routes/comments")(app);
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
