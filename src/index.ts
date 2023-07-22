@@ -27,14 +27,14 @@ app.get("/", (req, res) => {
   res.send("Welcome to Peopl Back End!");
 });
 
-require("./src/routes/users")(app);
-require("./src/routes/communities")(app);
-require("./src/routes/posts")(app);
-require("./src/routes/comments")(app);
-require("./src/routes/matchmaking")(app);
-require("./src/routes/requests")(app);
-require("./src/routes/messages")(app);
-require("./src/routes/search")(app);
+require("./routes/users")(app);
+require("./routes/communities")(app);
+require("./routes/posts")(app);
+require("./routes/comments")(app);
+require("./routes/matchmaking")(app);
+require("./routes/requests")(app);
+require("./routes/messages")(app);
+require("./routes/search")(app);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -4,7 +4,7 @@
   "description": "Back End for Peopl App",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node-dev index.ts",
+    "start": "ts-node-dev src/index.ts",
     "dev": "nodemon index.ts",
     "build": "rimraf dist && tsc",
     "ts.check": "tsc --project tsconfig.json",
