@@ -4,6 +4,15 @@ import User from "../models/users";
 import Comment from "../models/comments";
 import { Schema } from "mongoose";
 
+interface CommentUser {
+  _id: string;
+  content: string;
+  author: User;
+  parentId: Schema.Types.ObjectId;
+  parentType: number;
+  createdAt: Date;
+}
+
 interface CommentResponse {
   _id: string;
   content: string;
@@ -130,7 +139,9 @@ class PostService {
   }
 
   async getPostDetails(postId: string): Promise<PostDetailsResponse> {
-    const post = await Post.findById(postId);
+    const post: any = await Post.findById(postId)
+      .populate("author", "username")
+      .populate("community", "name");
     if (!post) {
       throw new Error("Post does not exist");
     }
@@ -139,8 +150,8 @@ class PostService {
       _id: post._id,
       title: post.title,
       content: post.content,
-      author: post.author,
-      community: post.community,
+      author: post.author.username,
+      community: post.community.name,
       createdAt: post.createdAt,
       comments: comments.comments,
     };
@@ -150,9 +161,11 @@ class PostService {
   async getCommentsRecursive(
     parentId: string
   ): Promise<{ comments: CommentResponse[]; totalComments: number }> {
-    const comments = await Comment.find({ parentId: parentId }).sort({
-      createdAt: -1,
-    });
+    const comments: any[] = await Comment.find({ parentId: parentId })
+      .populate("author", "username")
+      .sort({
+        createdAt: -1,
+      });
     const nestedComments: CommentResponse[] = [];
     let totalComments = comments.length;
 
