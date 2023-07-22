@@ -22,7 +22,7 @@ interface PostDetailsResponse {
   comments: CommentResponse[];
 }
 
-interface PostWithUserCommunity {
+export interface PostWithUserCommunity {
   _id: any;
   __v: any;
   title: string;
@@ -32,7 +32,7 @@ interface PostWithUserCommunity {
   createdAt: Date;
 }
 
-interface PostWithAuthorCommunityResponse {
+export interface PostWithAuthorCommunityResponse {
   _id: string;
   title: string;
   content: string;
@@ -144,7 +144,7 @@ class PostService {
     return postResponse;
   }
 
-  private async getCommentsRecursive(
+  async getCommentsRecursive(
     parentId: string
   ): Promise<{ comments: CommentResponse[]; totalComments: number }> {
     const comments = await Comment.find({ parentId: parentId }).sort({

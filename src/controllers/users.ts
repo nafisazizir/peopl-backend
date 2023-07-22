@@ -3,7 +3,7 @@ import UserService from "../services/users";
 import { UserAuthRequest } from "../middleware/auth";
 
 exports.register = (req: Request, res: Response): void => {
-  const { email, password } = req.query ? req.query : req.body;
+  const { email, password } = req.body;
   UserService.register(email, password)
     .then((response) => {
       res.status(201).send(response);
@@ -12,7 +12,7 @@ exports.register = (req: Request, res: Response): void => {
 };
 
 exports.login = (req: Request, res: Response): void => {
-  const { email, password } = req.query ? req.query : req.body;
+  const { email, password } = req.body;
   UserService.login(email, password)
     .then((response) => {
       res.status(200).send(response);
