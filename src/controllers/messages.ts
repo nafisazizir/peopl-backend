@@ -3,7 +3,7 @@ import MessageService from "../services/messages";
 import { UserAuthRequest } from "../middleware/auth";
 
 exports.sendMessage = (req: UserAuthRequest, res: Response): void => {
-  const { recipient, content } = req.query ? req.query : req.body;
+  const { recipient, content } = req.body;
   const username = req.username;
   MessageService.create(username, recipient, content)
     .then((message) => {

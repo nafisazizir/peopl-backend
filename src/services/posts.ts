@@ -14,6 +14,7 @@ interface CommentResponse {
 }
 
 interface PostDetailsResponse {
+  _id: string;
   title: string;
   content: string;
   author: Schema.Types.ObjectId;
@@ -134,6 +135,7 @@ class PostService {
     }
     const comments = await this.getCommentsRecursive(postId);
     const postResponse: PostDetailsResponse = {
+      _id: post._id,
       title: post.title,
       content: post.content,
       author: post.author,

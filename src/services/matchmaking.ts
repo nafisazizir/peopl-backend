@@ -16,7 +16,7 @@ class MatchmakingService {
       throw new Error("User does not exist");
     }
 
-    if (community !== undefined) {
+    if (community !== "") {
       const communityDocs = await Community.findOne({
         name: community,
       });
