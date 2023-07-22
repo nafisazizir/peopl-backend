@@ -3,7 +3,8 @@ import CommentService from "../services/comments";
 import { UserAuthRequest } from "../middleware/auth";
 
 exports.createComment = (req: UserAuthRequest, res: Response): void => {
-  const { parentId, parentType, content } = req.query ? req.query : req.body;
+  const { parentId, parentType, content } = req.body;
+  console.log(req.body);
   const email = req.email;
   CommentService.create(email, parentId, parentType, content)
     .then((comment) => {
