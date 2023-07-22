@@ -3,7 +3,7 @@ import RequestService from "../services/requests";
 import { UserAuthRequest } from "../middleware/auth";
 
 exports.createRequest = (req: UserAuthRequest, res: Response): void => {
-  const { recipient } = req.query ? req.query : req.body;
+  const { recipient } = req.body;
   const username = req.username;
   RequestService.create(username, recipient)
     .then((request) => {

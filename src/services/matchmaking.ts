@@ -1,9 +1,11 @@
 import Community from "../models/communities";
 import User from "../models/users";
+import Request from "../models/requests";
 
 interface MatchMakingResponse {
   username: string;
   mutualCommunities: number;
+  callToAction: string;
 }
 
 class MatchmakingService {
@@ -23,31 +25,39 @@ class MatchmakingService {
       const users = await User.find({
         _id: { $in: communityDocs?.members, $ne: user._id },
       });
-      const response: MatchMakingResponse[] = users.map((userA) => {
-        const mutualCommunities = this.countMutualFollowedCommunities(
-          user,
-          userA
-        );
-        return {
-          username: userA.username,
-          mutualCommunities: mutualCommunities,
-        };
-      });
+      const response: MatchMakingResponse[] = await Promise.all(
+        users.map(async (userA) => {
+          const mutualCommunities = this.countMutualFollowedCommunities(
+            user,
+            userA
+          );
+          const callToAction = await this.getStatusUsers(user, userA);
+          return {
+            username: userA.username,
+            mutualCommunities: mutualCommunities,
+            callToAction: callToAction,
+          };
+        })
+      );
       response.sort((a, b) => b.mutualCommunities - a.mutualCommunities);
 
       return response;
     } else {
       const users = await User.find({ _id: { $ne: user._id } });
-      const response: MatchMakingResponse[] = users.map((userA) => {
-        const mutualCommunities = this.countMutualFollowedCommunities(
-          user,
-          userA
-        );
-        return {
-          username: userA.username,
-          mutualCommunities: mutualCommunities,
-        };
-      });
+      const response: MatchMakingResponse[] = await Promise.all(
+        users.map(async (userA) => {
+          const mutualCommunities = this.countMutualFollowedCommunities(
+            user,
+            userA
+          );
+          const callToAction = await this.getStatusUsers(user, userA);
+          return {
+            username: userA.username,
+            mutualCommunities: mutualCommunities,
+            callToAction: callToAction,
+          };
+        })
+      );
       response.sort((a, b) => b.mutualCommunities - a.mutualCommunities);
 
       return response;
@@ -74,6 +84,28 @@ class MatchmakingService {
     }
 
     return intersectionSet.size;
+  }
+
+  async getStatusUsers(userA: User, userB: User): Promise<string> {
+    const request = await Request.findOne({
+      $or: [
+        { sender: userA._id, recipient: userB._id },
+        { sender: userB._id, recipient: userA._id },
+      ],
+    });
+
+    if (!request) {
+      return "connect";
+    }
+
+    if (request.status === "pending") {
+      if (request.sender.toString() === userA._id.toString()) {
+        return "pending";
+      } else {
+        return "accept";
+      }
+    }
+    return "chat";
   }
 }
 

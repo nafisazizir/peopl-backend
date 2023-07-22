@@ -7,6 +7,7 @@ module.exports = (app: Express) => {
 
   router.post("/", verifyToken, messages.sendMessage);
   router.get("/", verifyToken, messages.getMessages);
+  router.get("/summary", verifyToken, messages.getMessageSummary);
 
   app.use("/api/message", router);
 };

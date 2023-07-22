@@ -21,3 +21,12 @@ exports.getMessages = (req: UserAuthRequest, res: Response): void => {
     })
     .catch((error) => res.status(400).json(error.message));
 };
+
+exports.getMessageSummary = (req: UserAuthRequest, res: Response): void => {
+  const username = req.username;
+  MessageService.getMessageSummary(username)
+    .then((messages) => {
+      res.status(200).send(messages);
+    })
+    .catch((error) => res.status(400).json(error.message));
+};
