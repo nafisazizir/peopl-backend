@@ -1,6 +1,10 @@
 import Community from "../models/communities";
 import Post from "../models/posts";
 import User from "../models/users";
+import PostService, {
+  PostWithUserCommunity,
+  PostWithAuthorCommunityResponse,
+} from "./posts";
 
 interface CommunityDetailsResponse {
   name: string;
@@ -8,7 +12,7 @@ interface CommunityDetailsResponse {
   createdAt: Date;
   isMember: boolean;
   totalMembers: number;
-  posts: Post[];
+  posts: PostWithAuthorCommunityResponse[];
 }
 
 class CommunityService {
@@ -44,14 +48,35 @@ class CommunityService {
       throw new Error("Community does not exist");
     }
     const user = await User.findOne({ username: username });
-    const posts = await Post.find({ community: community._id });
+    const posts: PostWithUserCommunity[] = await Post.find({
+      community: community._id,
+    })
+      .sort({ createdAt: -1 })
+      .populate("author", "username")
+      .populate("community", "name");
+    const postRes: PostWithAuthorCommunityResponse[] = await Promise.all(
+      posts.map(async (post) => {
+        const comments = await PostService.getCommentsRecursive(post._id);
+        return {
+          _id: post._id,
+          title: post.title,
+          content: post.content,
+          author: post.author.username,
+          community: post.community.name,
+          createdAt: post.createdAt,
+          totalComments: comments.totalComments,
+          __v: post.__v,
+        };
+      })
+    );
+
     const communityDetails: CommunityDetailsResponse = {
       name: community.name,
       description: community.description,
       createdAt: community.createdAt,
       isMember: user ? community.members.includes(user._id) : false,
       totalMembers: community.members.length,
-      posts: posts ? posts : [],
+      posts: postRes,
     };
 
     return communityDetails;
