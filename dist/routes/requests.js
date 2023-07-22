@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth_1 = __importDefault(require("../middleware/auth"));
 module.exports = (app) => {
-    const requests = require("../controllers/requests.ts");
+    const requests = require("../controllers/requests");
     var router = require("express").Router();
     router.post("/", auth_1.default, requests.createRequest);
     router.get("/", auth_1.default, requests.getPendingRequests);

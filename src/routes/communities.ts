@@ -2,7 +2,7 @@ import { Express } from "express";
 import verifyToken from "../middleware/auth";
 
 module.exports = (app: Express) => {
-  const communities = require("../controllers/communities.ts");
+  const communities = require("../controllers/communities");
   var router = require("express").Router();
 
   router.post("/", communities.createCommunity);

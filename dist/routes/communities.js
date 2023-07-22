@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth_1 = __importDefault(require("../middleware/auth"));
 module.exports = (app) => {
-    const communities = require("../controllers/communities.ts");
+    const communities = require("../controllers/communities");
     var router = require("express").Router();
     router.post("/", communities.createCommunity);
     router.get("/", communities.getCommunities);

@@ -2,7 +2,7 @@ import { Express } from "express";
 import verifyToken from "../middleware/auth";
 
 module.exports = (app: Express) => {
-  const messages = require("../controllers/messages.ts");
+  const messages = require("../controllers/messages");
   var router = require("express").Router();
 
   router.post("/", verifyToken, messages.sendMessage);

@@ -2,7 +2,7 @@ import { Express } from "express";
 import verifyToken from "../middleware/auth";
 
 module.exports = (app: Express) => {
-  const requests = require("../controllers/requests.ts");
+  const requests = require("../controllers/requests");
   var router = require("express").Router();
 
   router.post("/", verifyToken, requests.createRequest);
