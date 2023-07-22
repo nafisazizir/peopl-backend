@@ -7,6 +7,11 @@ module.exports = (app: Express) => {
 
   router.post("/", communities.createCommunity);
   router.get("/", communities.getCommunities);
+  router.get(
+    "/joined-communities",
+    verifyToken,
+    communities.getJoinedCommunities
+  );
   router.get("/:name", verifyToken, communities.getCommunityDetails);
   router.post("/:name/join", verifyToken, communities.joinCommunity);
   router.post("/:name/leave", verifyToken, communities.leaveCommunity);

@@ -3,7 +3,7 @@ import PostService from "../services/posts";
 import { UserAuthRequest } from "../middleware/auth";
 
 exports.createPost = (req: UserAuthRequest, res: Response): void => {
-  const { title, content, community } = req.query ? req.query : req.body;
+  const { title, content, community } = req.body;
   const username = req.username;
   PostService.create(title, content, username, community)
     .then((post) => {

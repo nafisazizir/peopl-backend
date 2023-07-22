@@ -40,3 +40,10 @@ exports.leaveCommunity = (req: UserAuthRequest, res: Response): void => {
     .then((user) => res.status(200).send(user))
     .catch((error) => res.status(400).json(error.message));
 };
+
+exports.getJoinedCommunities = (req: UserAuthRequest, res: Response): void => {
+  const username = req.username;
+  CommunityService.getJoinedCommunities(username)
+    .then((communities) => res.status(200).send(communities))
+    .catch((error) => res.status(400).json(error.message));
+};

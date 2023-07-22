@@ -133,6 +133,20 @@ class CommunityService {
     }
     return updatedUser;
   }
+
+  async getJoinedCommunities(username: string): Promise<string[]> {
+    const user: any = await User.findOne({ username: username }).populate(
+      "followedCommunities",
+      "name"
+    );
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+
+    return user.followedCommunities.map(
+      (community: Community) => community.name
+    );
+  }
 }
 
 export default new CommunityService();

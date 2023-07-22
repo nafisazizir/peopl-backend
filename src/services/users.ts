@@ -3,12 +3,25 @@ import { generateUsername } from "unique-username-generator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
+import PostService, {
+  PostWithUserCommunity,
+  PostWithAuthorCommunityResponse,
+} from "./posts";
+import Post from "../models/posts";
+import { ObjectId } from "mongoose";
 
 config();
 
 interface TokenResponse {
   token: string;
   username: string;
+}
+
+interface UserDetails {
+  username: string;
+  email: string;
+  followedCommunities: ObjectId[];
+  posts: PostWithAuthorCommunityResponse[];
 }
 
 class UserService {
@@ -82,12 +95,40 @@ class UserService {
     }
   }
 
-  async getDetails(username: string): Promise<User> {
+  async getDetails(username: string): Promise<UserDetails> {
     const user = await User.findOne({ username: username });
     if (!user) {
       throw new Error("Username not found");
     }
-    return user;
+
+    const posts: PostWithUserCommunity[] = await Post.find({
+      author: user._id,
+    })
+      .sort({ createdAt: -1 })
+      .populate("author", "username")
+      .populate("community", "name");
+    const postRes: PostWithAuthorCommunityResponse[] = await Promise.all(
+      posts.map(async (post) => {
+        const comments = await PostService.getCommentsRecursive(post._id);
+        return {
+          _id: post._id,
+          title: post.title,
+          content: post.content,
+          author: post.author.username,
+          community: post.community.name,
+          createdAt: post.createdAt,
+          totalComments: comments.totalComments,
+          __v: post.__v,
+        };
+      })
+    );
+
+    return {
+      username: user.username,
+      email: user.email,
+      followedCommunities: user.followedCommunities,
+      posts: postRes,
+    };
   }
 
   async getRandomUsernameList(): Promise<string[]> {
