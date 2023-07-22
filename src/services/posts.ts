@@ -5,6 +5,7 @@ import Comment from "../models/comments";
 import { Schema } from "mongoose";
 
 interface CommentResponse {
+  _id: string;
   content: string;
   author: Schema.Types.ObjectId;
   parentId: Schema.Types.ObjectId;
@@ -157,6 +158,7 @@ class PostService {
 
     for (const comment of comments) {
       const nestedComment: CommentResponse = {
+        _id: comment._id,
         content: comment.content,
         author: comment.author,
         parentId: comment.parentId,
